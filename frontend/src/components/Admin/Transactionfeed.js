@@ -48,7 +48,7 @@ function Transactionfeed()  {
     setData(list);
     setColumns(columns);
 
-    Axios.post('/api/savetranscams',
+    Axios.post('http://localhost:3001/api/savetranscams',
     list ,
     {mode: 'cors'},
     {headers:
@@ -101,7 +101,7 @@ function Transactionfeed()  {
     setData(list);
     setColumns(columns);
 
-    Axios.post('/api/savetranskarvy',
+    Axios.post('http://localhost:3001/api/savetranskarvy',
     list ,
     {mode: 'cors'},
     {headers:
@@ -154,7 +154,7 @@ function Transactionfeed()  {
     setData(list);
     setColumns(columns);
 
-    Axios.post('/api/savetransfranklin',
+    Axios.post('http://localhost:3001/api/savetransfranklin',
     list ,
     {mode: 'cors'},
     {headers:

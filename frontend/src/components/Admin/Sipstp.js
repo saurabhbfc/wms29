@@ -1,25 +1,18 @@
 import React, { Component } from 'react'
-import DayPickerInput from 'react-day-picker/DayPickerInput';
-import 'react-day-picker/lib/style.css';
 import $ from 'jquery';
-import Axios from 'axios';
-import '../../../node_modules/aos/dist/aos.css';
-import MomentLocaleUtils, {
-  formatDate,
-  parseDate,
-} from 'react-day-picker/moment';
-
-
-
+import moment from 'moment';
+import MonthPickerInput  from 'react-month-picker-input';
+import 'react-month-picker-input/dist/react-month-picker-input.css'
 
 class Example extends Component {
   
   constructor(props) {
     super(props);
-    this.handleDayChange = this.handleDayChange.bind(this);
-    this.onChangekstatus = this.onChangekstatus.bind(this);
+    this.handlechange = this.handlechange.bind(this);
+    this.onChanger1 = this.onChanger1.bind(this);
+    this.onChanger2 = this.onChanger2.bind(this);
+
     this.state = {
-      selectedDay: undefined,
       data1:[],
       data2:[],
       data3:[],
@@ -28,9 +21,29 @@ class Example extends Component {
       rvalue:'',
       user:'',
       defaultValue:"",
+      year:'',
+      mon:'',
     };
   }
-  onChangekstatus(e) {
+  onChanger1(e) {
+    this.setState({
+      rvalue: e.target.value    
+    });
+    var mon= ((new Date).getMonth()+1);
+    var yer =((new Date).getFullYear());
+    $.ajax({
+       url: "http://localhost:3001/api/getsipstpall",
+       type: "GET",
+       data:{dt:mon,yr:yer},
+        success: function (res1) {
+          this.setState({
+            data1: res1.data,
+            msg: res1.message});
+       }.bind(this)
+       
+     });
+ }
+  onChanger2(e) {
     this.setState({
       rvalue: e.target.value    
     });
@@ -48,16 +61,11 @@ class Example extends Component {
     }
     //alert(e.target.value)
   }
+  
   changeApplicant = (e) =>{
-   // var sel = e.target.value;
-    this.setState({ user: e.target.value });
-    //alert(sel)
-    var mon= ((new Date).getMonth()+1);
-    var yer =((new Date).getFullYear());
-    //var dt =(new Date).getMonth()+1;
-    //alert(mon)
-    //alert(yer)
-   // document.title = "WMS | Folio Detail"
+    document.title = "WMS | Folio Detail"
+    var mon= this.state.mon+1;
+    var yer =this.state.year;
     $.ajax({
       url: "http://localhost:3001/api/getsipstpuserwise",
       type: "GET",
@@ -71,54 +79,50 @@ class Example extends Component {
         console.log(jqXHR);          
       }
     });
-    
-  
 }
-  handleDayChange(day) {
-    var mon= (day.getMonth()+1);
-    var yer =(day.getFullYear());
-   // alert(yer)
-   this.setState({ selectedDay: day });
-   //var rval = this.state.rvalue;
- if(this.state.rvalue == "yes"){
-    $.ajax({
-      url: "http://localhost:3001/api/getsipstpall",
-      type: "GET",
-      data:{dt:mon,yr:yer},
-       success: function (res1) {
-         //console.log("res=",res1.data)
-        this.setState({
-           data1: res1.data,
-           msg: res1.message});
-      }.bind(this),
-      error: function(jqXHR) {
-        console.log(jqXHR);         
-      }
-    });   
-  }else{
-    $.ajax({
-      url: "http://localhost:3001/api/getsipstpuserwise",
-      type: "GET",
-      data:{dt:mon,yr:yer,name:this.state.user},
-       success: function (res3) {
-        this.setState({
-          data3: res3.data,
-          msg3: res3.message});
-      }.bind(this),
-      error: function(jqXHR) {
-        console.log(jqXHR);          
-      }
+  
+  handlechange(e,yr,mn){
+    this.setState({
+      year: yr,
+      mon: mn  
     });
-  }
+    alert(this.state.rvalue)
+    if(this.state.rvalue == "yes"){
+      $.ajax({
+        url: "http://localhost:3001/api/getsipstpall",
+        type: "GET",
+        data:{dt:mn+1,yr:yr},
+         success: function (res1) {
+          this.setState({
+             data1: res1.data,
+             msg: res1.message});
+        }.bind(this),
+        error: function(jqXHR) {
+          console.log(jqXHR);         
+        }
+      });   
+    }else{
+      var user = document.getElementById("user").value;
+      $.ajax({
+        url: "http://localhost:3001/api/getsipstpuserwise",
+        type: "GET",
+        data:{dt:mn+1,yr:yr,name:user},
+         success: function (res3) {
+          this.setState({
+            data3: res3.data,
+            msg3: res3.message});
+        }.bind(this)
+      });
+    }
   }
   componentDidMount(){
-    //  document.getElementById("radioPrimary1").checked=true;
     document.title = "WMS | Folio Detail"
      var mon= ((new Date).getMonth()+1);
     var yer =((new Date).getFullYear());
-    //var dt =(new Date).getMonth()+1;
-    //alert(yer)
-   // document.title = "WMS | Folio Detail"
+    this.setState({
+      year: yer,
+      mon: mon  
+    });
     $.ajax({
       url: "http://localhost:3001/api/getsipstpall",
       type: "GET",
@@ -136,9 +140,7 @@ class Example extends Component {
   //}
   }
   
-  render() {
-   // const { selectedDay } = this.state;
-      
+  render() {      
     return (  
       <>
       <style jsx>
@@ -184,30 +186,25 @@ class Example extends Component {
                                     </span>
                                 </div>
                                 <div>
-                                <DayPickerInput
-        formatDate={formatDate}
-        parseDate={parseDate}
-        onDayChange={this.handleDayChange}
-        placeholder={`${formatDate(new Date())}`}
-      />
-      </div>
+                                <MonthPickerInput year={2021} month={0} closeOnSelect={true}  maxYear={2021} onChange={this.handlechange} id="calender"/>
+                                </div>
                                 
                             </div>
                             {/* /.input group */}
                         </div>
                       </div>
                     </div>
-                    <div className="row mt-5">
+                    <div className="row mt-2">
                       <div className="col-12 form-group text-center check_btn">
                       <div className="form-group clearfix" style={{marginLeft:'-144px'}}>
                       <div className="icheck-primary d-inline mr-5">
-                        <input type="radio" id="radioPrimary1" name="r1" defaultValue="yes" onClick={this.onChangekstatus}   />
+                        <input type="radio" id="radioPrimary1" name="r1" defaultValue="yes" onClick={this.onChanger1} />
                         <label for="radioPrimary1">
                           All
                         </label>
                       </div>
                       <div className="icheck-primary d-inline">
-                        <input type="radio" id="radioPrimary2" name="r1" defaultValue="no" onClick={this.onChangekstatus}   />
+                        <input type="radio" id="radioPrimary2" name="r1" defaultValue="no" onClick={this.onChanger2}   />
                         <label for="radioPrimary2">
                           Userwise
                         </label>
@@ -223,12 +220,10 @@ class Example extends Component {
                         </div>  */}
                       </div>
                     </div>
-
-	  
-        { ( this.state.rvalue==='yes')? (
+                    { ( this.state.rvalue==='yes')? (
 	  <div> 
 			 
-       { ( document.getElementById("radioPrimary1").checked===true && this.state.msg==='Successfull')? (
+       { (this.state.msg==='Successfull')? (
                       <div className="card">
                         <div className="card-header bg-primary">
                           <h3 className="card-title"></h3>
@@ -248,22 +243,24 @@ class Example extends Component {
                           <thead>
                               <tr>
                                 <th>S. No.</th>
+                                <th>Date</th>
+                                <th>Folio_no</th>
                                 <th>Scheme</th>
                                 <th>Amount</th>
-                                <th>Folio_no</th>
-                                <th>Date</th>
-                               </tr>
+                                <th>Trxn_Nature</th>
+                              </tr>
                             </thead>
                            
                             <tbody>
                             {this.state.data1.map((item, index) => (
                                 <tr key={index}>
                                     <td>{index+1}</td> 
-                                    <td>{item.scheme}</td>
-                                    <td>{item.amount}</td>
-                                    <td>{item.folio_no}</td>
-                                    <td>{item.traddate}</td>
-                                    </tr>
+                                    <td>{moment(item.TRADDATE).utc().format('MM/DD/YYYY')}</td>
+                                    <td>{item.FOLIO_NO}</td>
+                                    <td>{item.SCHEME}</td>
+                                    <td>{item.AMOUNT}</td>
+                                    <td>{item.TRXN_NATURE}</td>
+                                </tr>
                             
                             ))}
                                 
@@ -289,7 +286,7 @@ class Example extends Component {
                         <div className="col-md-12">
                           <div className="form-group">
                             <label>Applicant</label>
-                            <select className="form-control" onChange={this.changeApplicant}>
+                            <select className="form-control" onChange={this.changeApplicant} id="user">
                               <option>Select Applicant</option>
                               {this.state.data2.map((item, index) => (
                                     <option value={item}>{item}</option>   
@@ -322,10 +319,11 @@ class Example extends Component {
                           <thead>
                               <tr>
                                 <th>S. No.</th>
+                                <th>Date</th>
+                                <th>Folio_no</th>
                                 <th>Scheme</th>
                                 <th>Amount</th>
-                                <th>Folio_no</th>
-                                <th>Date</th>
+                                <th>Trxn_Nature</th>
                                </tr>
                             </thead>
                            
@@ -333,11 +331,12 @@ class Example extends Component {
                             {this.state.data3.map((item, index) => (
                                 <tr key={index}>
                                     <td>{index+1}</td> 
-                                    <td>{item.scheme}</td>
-                                    <td>{item.amount}</td>
-                                    <td>{item.folio_no}</td>
-                                    <td>{item.traddate}</td>
-                                    </tr>
+                                    <td>{moment(item.TRADDATE).utc().format('MM/DD/YYYY')}</td>
+                                    <td>{item.FOLIO_NO}</td>
+                                    <td>{item.SCHEME}</td>
+                                    <td>{item.AMOUNT}</td>
+                                    <td>{item.TRXN_NATURE}</td>
+                                </tr>
                             
                             ))}
                                 
@@ -358,10 +357,6 @@ class Example extends Component {
              
              ): (<div> <br /> </div>)}
 
-
-
-
-                   
                       {/* /.card */}
                 </div>
                 {/*/.col (left) */}

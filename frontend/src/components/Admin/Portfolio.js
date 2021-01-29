@@ -1,45 +1,80 @@
 import React from "react";
-import $ from 'jquery';
 import { Component } from "react";
+import $ from 'jquery';
 
 var createReactClass = require('create-react-class');
 
 class Portfolio extends Component { 
-  constructor(props) {
-    super(props);
-    this.state = {
-      error: null,
-      isLoaded: false,
-      data1: [],
-      data2: [],
-    };
-  }
-  changeApplicant = (e) =>{
-    var sel = e.target.value;
-    $.ajax({
-      url: "http://localhost:3001/api/getportfolio",
-      type: "GET",
-      data:{name:sel},
-       success: function (res2) {
-        this.setState({ data2: res2 });
-      }.bind(this),
-      error: function(jqXHR) {
-        console.log(jqXHR);         
+    constructor(props) {
+        super(props);
+        this.state = {
+          error: null,
+          isLoaded: false,
+          data1: [],
+          data2: [],
+          data3: [],
+          data4: [],
+          data5: [],
+        };
       }
-    });   
-}
+      changeApplicant = (e) =>{
+        var sel = e.target.value;
+        $.ajax({
+            url: "http://localhost:3001/api/getpan",
+            type: "GET",
+            data:{name:sel},
+             success: function (res4) {
+              this.setState({ data4: res4 });
+            }.bind(this),
+            error: function(jqXHR) {
+              console.log(jqXHR);         
+            }
+          });  
+          // $.ajax({
+          //   url: "http://localhost:3001/api/getisin",
+          //   type: "GET",
+          //   data:{name:sel},
+          //    success: function (res5) {
+          //     this.setState({ data5: res5 });
+          //   }.bind(this),
+          //   error: function(jqXHR) {
+          //     console.log(jqXHR);         
+          //   }
+          // });   
+        $.ajax({
+          url: "http://localhost:3001/api/getportfolio",
+          type: "GET",
+          data:{name:sel},
+           success: function (res3) {
+            this.setState({ data3: res3 });
+          }.bind(this),
+          error: function(jqXHR) {
+            console.log(jqXHR);         
+          }
+        });   
+    }
   componentDidMount(){
-    document.title = "WMS | Portfolio"
+    document.title = "WMS | Folio Detail"
     $.ajax({
-      url: "http://localhost:3001/api/getapplicant",
-      type: "GET",
-       success: function (res1) {
-        this.setState({ data1: res1 });
-      }.bind(this),
-      error: function(jqXHR) {
-        console.log(jqXHR);         
-      }
-    });   
+        url: "http://localhost:3001/api/getapplicant",
+        type: "GET",
+         success: function (res1) {
+          this.setState({ data1: res1 });
+        }.bind(this),
+        error: function(jqXHR) {
+          console.log(jqXHR);          
+        }
+      });
+      $.ajax({
+        url: "http://localhost:3001/api/getschemetype",
+        type: "GET",
+         success: function (res2) {
+          this.setState({ data2: res2 });
+        }.bind(this),
+        error: function(jqXHR) {
+          console.log(jqXHR);          
+        }
+      });
   }
   render(){
   return (  
@@ -59,12 +94,12 @@ class Portfolio extends Component {
           <div className="container-fluid">
             <div className="row mb-2">
               <div className="col-sm-6">
-                <h1>Portfolio</h1>
+                <h1>Portfolio Report</h1>
               </div>
               <div className="col-sm-6">
                 <ol className="breadcrumb float-sm-right">
                   <li className="breadcrumb-item"><a href="#">Home</a></li>
-                  <li className="breadcrumb-item active">Portfolio</li>
+                  <li className="breadcrumb-item active">Portfolio Report</li>
                 </ol>
               </div>
             </div>
@@ -75,63 +110,119 @@ class Portfolio extends Component {
           <div className="container-fluid">
             <div className="row">
               {/* left column */}
-                <div className="col-md-8 offset-md-2">
+              <div className="col-md-12">
+
+
                     <div className="card card-primary card-outline">
-                        <div className="card-body box-profile">
-                            
-                            <h5 className="text-bold text-danger text-center">Mutual Fund</h5>
-                            <div className="col-md-12">
-                              <div className="form-group">
-                                <label>Applicant</label>
-                                <select className="form-control" onChange={this.changeApplicant}>
+                        <div className="card-header">
+                            <div className="row">
+                                <div className="col-md-4 offset-md-1">
+                                    <div className="form-group">
+                                        <label>Applicant :</label>
+                                        <select className="form-control" id="applicant" onChange={this.changeApplicant}>
+                                            <option value>Select Applicant</option>
                                 {this.state.data1.map((item, index) => (
                                     <option value={item}>{item}</option>
                                   
                                 ))}
                                 </select>
-                              </div>
+                                    </div>
+                                </div>
+                                <div className="col-md-4 offset-md-1">
+                                    <div className="form-group">
+                                        <label>Category :</label>
+                                        <select className="form-control">
+                                            <option value="">All</option>
+                                            {this.state.data2.map((item, index) => (
+                                    <option value={item}>{item}</option>
+                                  
+                                ))}
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
-                            <hr/>
-                            <h5 className="text-bold text-info"></h5>
-                            <hr/>
-                            {this.state.data2.map((item, index) => (
-                              <>
-                              <h5 className="text-bold text-info">{item.scheme_type} </h5>
-                              <hr/>
-                            <ul className="list-group list-group-unbordered mb-3">
-                                <li className="list-group-item">
-                                    <b className="text-primary">{item.scheme} ({item.folio_no})</b> 
-                                    <a className="float-right">
-                                        <span className="badge bg-warning float-right"><i className="fa fa-plus text-white"></i></span>
-                                        <span className="badge badge-pill badge-light float-right mr-2"><i className="fa fa-cubes text-danger" style={{fontSize:'18px'}}></i></span>
-                                        <span class="badge bg-warning float-right mr-2"><i className="fa fa-minus text-white"></i></span>
-                                    </a>
-                                </li>
-                                <li className="list-group-item">
-                                    Mkt. Value: <b>₹ {item.amount}</b> <a className="float-right"><span class="badge badge-success">Gain :  ₹ 0</span></a>
-                                </li>
-                                <li className="list-group-item">
-                                    Cost : <b>₹ {item.amount}</b> <a className="float-right">CAGR: <b>2.8%</b></a>
-                                </li>
-                                <li className="list-group-item">
-                                    Unit : <b>{item.units}</b> <a className="float-right">Avg. Day: <b>34</b></a>
-                                </li>
-                            </ul>
-                            </>
-                            ))}
-
-
-
-
-
-                           
-                            
-                          
-                           
-                            
                         </div>
+                        <div className="card-body">
+                            <table id="example2" class="table table-bordered table-hover table-responsive">
+                                <thead>
+                                    <tr className="bg-primary">
+                                        <th>Scheme/Company</th>
+                                        <th>Folio</th>
+                                        <th>Purchase</th>
+                                        <th>Switch In</th>
+                                        <th>Div. Reinv.</th>
+                                        <th>Sell</th>
+                                        <th>Switch Out</th>
+                                        <th>Balance Unit/No</th>
+                                        <th>Current Value</th>
+                                        <th>Div. Paid/Interest</th>
+                                        <th>Gain</th>
+                                        <th>Absolute Return%</th>
+                                        <th>XIRR(%)</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                        <tr>
+                                            <td>{this.state.data4.map((item, index) => (
+                                                <b>{item.INV_NAME} [Pan: {item.PAN}]</b>
+                                                ))}
+                                                </td>
+                                        </tr>
+                                        </tbody>  
+                        
+                                {this.state.data3.map((item, index) => (
+                                      <tbody>
+                                          <tr><td><span className="text-primary">{item._id.SCHEME_TYPE}</span></td></tr>
+                                <tr><td>{item._id.SCHEME}</td>
+                                    <td>{item._id.FOLIO_NO}</td>
+                                    <td>{item.AMOUNT}</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>{item.UNITS}</td>
+                                    <td>
+                                    {this.state.data5.map((item, index) => (
+                                                {item}
+                                                ))}
+                                    </td>
+                                    <td></td>
+                                    <td></td>
+                                    </tr>
+                                    </tbody>
+                            ))}
+                                
+                               
+                                <tfoot>
+                                    <tr className="bg-gray">
+                                        <th>Total</th>
+                                        <th></th>
+                                        <th>9,100</th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th>9,747</th>
+                                        <th></th>
+                                        <th>377</th>
+                                        <th>4.14</th>
+                                        <th>50.41</th>
+                                        <th></th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+
+
+
+
+
                     </div>
-                </div>
+
+              </div>
+              {/*/.col (left) */}
             </div>
             {/* /.row */}
           </div>{/* /.container-fluid */}
@@ -143,3 +234,4 @@ class Portfolio extends Component {
 };
 
 export default Portfolio;
+

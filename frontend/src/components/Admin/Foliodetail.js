@@ -74,7 +74,8 @@ changeFolio = (e) =>{
   componentDidMount(){
     document.title = "WMS | Folio Detail"
     $.ajax({
-      url: "http://localhost:3001/api/getapplicant",
+     // url: "http://localhost:3001/api/getapplicant",
+      url: "http://localhost:3001/api/getapplicantCAMS",
       type: "GET",
        success: function (res1) {
         this.setState({ data1: res1 });
