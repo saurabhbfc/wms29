@@ -1106,6 +1106,9 @@ app.post("/api/savefoliocamsold", function (req, res) {
 
  })
  app.post("/api/savetranscams", function (req, res) {
+	  console.log("25decxmas",req.body,"newuear",req);
+	 
+	 
     var model = mongoose.model('trans_cams', transcams, 'trans_cams');
     for (i = 0; i < req.body.length; i++) {
         var mod = new model(req.body[i]);
