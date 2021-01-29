@@ -1109,7 +1109,7 @@ app.post("/api/savefoliocamsold", function (req, res) {
     var model = mongoose.model('trans_cams', transcams, 'trans_cams');
     for (i = 0; i < req.body.length; i++) {
         var mod = new model(req.body[i]);
-	    console.log(res);
+	    console.log(req.body[i]);
 //         mod.save(function (err, data) {
 //             if (err) {
 //                 res.send(err);
