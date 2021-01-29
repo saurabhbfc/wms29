@@ -1109,16 +1109,17 @@ app.post("/api/savefoliocamsold", function (req, res) {
     var model = mongoose.model('trans_cams', transcams, 'trans_cams');
     for (i = 0; i < req.body.length; i++) {
         var mod = new model(req.body[i]);
-        mod.save(function (err, data) {
-            if (err) {
-                res.send(err);
-            }
-            else {
-                //res.send({data:"Record has been Inserted..!!"});
-               // console.log("foliokarvy="+foliokarvy)
-                console.log(data);
-            }
-        });
+	    console.log(res);
+//         mod.save(function (err, data) {
+//             if (err) {
+//                 res.send(err);
+//             }
+//             else {
+//                 //res.send({data:"Record has been Inserted..!!"});
+//                // console.log("foliokarvy="+foliokarvy)
+//                 console.log(data);
+//             }
+//         });
     }
 })
 
