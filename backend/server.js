@@ -825,6 +825,8 @@ app.get("/api/getfoliolist", function (req, res) {
            // });
         });
     })
+
+
     app.get("/api/getscheme", function (req, res) {
         var transc = mongoose.model('trans_cams', transcams, 'trans_cams');             
         //var transk = mongoose.model('trans_karvy', transkarvy, 'trans_karvy');               
@@ -1283,6 +1285,13 @@ app.post("/api/Updatedata", function (req, res) {
 }
 
  })
+
+
+app.get("/api/emp", function (req, res){
+res.send("Namsstey Saurabh");
+console.log("Namstey Rajesh");
+  })
+
 
  app.post("/api/Updateinsertdata", function (req, res) {
     for (i = 0; i < req.body.length; i++) {   
